@@ -1,9 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
 :root {
-  --primary-color: #2d545e;
-  --secondary-color: #e1b382;
-  --secondary-darker: #c89666;
+  --primary-color: #3a638c;
+  --primary-darker: #054179;
+  --secondary-color: #7cac9c;
+  --secondary-darker: #046b5b;
 }
 
 * {
@@ -24,8 +25,9 @@ body {
 }
 
 .container {
-  background-color: var(--secondary-darker);
-  border: 2px solid black;
+  background-color: white;
+  border: 6px solid black;
+  border-radius: 2px;
   padding: 5%;
 }
 
