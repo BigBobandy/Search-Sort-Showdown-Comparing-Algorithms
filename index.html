@@ -21,12 +21,29 @@
       </h3>
       <button class="button" id="beginBtn">Begin</button>
 
+      <div class="wrapper"></div>
+      <select name="size-selector" id="size-selector" class="hide">
+        <option value="11">Array Size: 10</option>
+        <option value="21">Array Size: 20</option>
+        <option value="41">Array Size: 40</option>
+        <option value="61">Array Size: 60</option>
+        <option value="81">Array Size: 80</option>
+      </select>
+
+      <select name="sort-iteration-selector" id="sort-iteration-selector" class="hide">
+        <option value="50">50 Sort Iterations</option>
+        <option value="100">100 Sort Iterations</option>
+        <option value="1000">1,000 Sort Iterations</option>
+        <option value="10000">10,000 Sort Iterations</option>
+        <option value="100000">100,000 Sort Iterations</option>
+      </select>
+
       <form id="inputForm">
         <input
           type="text"
           class="hide"
           id="userInput"
-          placeholder="Enter a number."
+          placeholder="Enter a number..."
           maxlength="2"
           required
         />
@@ -34,6 +51,7 @@
       <button type="button" class="button hide" id="searchBtn">
         Search <i class="fa fa-search"></i>
       </button>
+    </div>
     </div>
     <div class="container hide" id="resultContainer"></div>
   </body>

@@ -31,11 +31,22 @@ body {
   padding: 5%;
 }
 
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 601%;
+}
+
 #userInput {
   font-family: inherit;
-  right: -30%;
-  border-radius: 5px;
+  width: 150px;
+  padding: 5px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 2px solid var(--primary-darker);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
+  margin-right: 10px;
 }
 
 .button {
@@ -47,7 +58,7 @@ body {
   border: 2px solid var(--secondary-darker);
   border-radius: 10px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
-  font-size: 20px;
+  font-size: 15px;
   padding: 5px;
   cursor: pointer;
   font-weight: bold;
@@ -84,4 +95,27 @@ body {
 
 #inputForm {
   display: inline;
+}
+
+select {
+  user-select: none;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 15px;
+  color: white;
+  background-color: var(--primary-color);
+  border: 2px solid var(--primary-darker);
+  border-radius: 10px;
+  padding: 5px;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+select:hover {
+  background-color: var(--primary-darker);
+}
+
+option {
+  font-family: inherit;
+  font-weight: bold;
 }

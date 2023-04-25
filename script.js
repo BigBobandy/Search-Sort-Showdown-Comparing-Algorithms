@@ -6,13 +6,19 @@ const container = document.querySelector(".container");
 const results = document.getElementById("resultContainer");
 const searchButton = document.getElementById("searchBtn");
 const websiteDescription = document.getElementById("website-description");
+const sizeSelectElement = document.getElementById("size-selector");
+const iterationSelectorElement = document.getElementById(
+  "sort-iteration-selector"
+);
 
-// Set the size of the array to 21
-let size = 21;
-// Initialize an array of size 21
+// Set the size of the array to the default size of 11
+let size = 11;
+// Initialize an array with the size variable
 let array = [size];
 // Variable to store user input
 let input;
+// Defines how many times the sorting algorithms will run with the defualt value being 50
+let numRuns = 50;
 
 // Create an element for the bubble sort result
 const bubbleSortElement = document.createElement("h4");
@@ -34,6 +40,8 @@ beginBtn.addEventListener("click", () => {
   inputElement.classList.remove("hide");
   searchButton.classList.remove("hide");
   websiteDescription.classList.add("hide");
+  sizeSelectElement.classList.remove("hide");
+  iterationSelectorElement.classList.remove("hide");
   // Remove the begin button
   beginBtn.remove();
 
@@ -65,6 +73,10 @@ beginBtn.addEventListener("click", () => {
   results.append(errorElement);
 });
 
+sizeSelectElement.addEventListener("change", arraySizeHandler);
+
+iterationSelectorElement.addEventListener("change", iterationHandler);
+
 // Add an event listener to the search button for a click event
 searchButton.addEventListener("click", () => {
   // Remove the "hide" class from the results element
@@ -93,8 +105,6 @@ searchButton.addEventListener("click", () => {
   }
 
   // Use the measureAverageSortTime function to calculate average time for both sorting algorithms
-  // numRuns defines how many times the sorting algorithms will run
-  const numRuns = 1000;
   const insertionSortAverageTime = measureAverageSortTime(
     insertionSort,
     array,
@@ -108,10 +118,10 @@ searchButton.addEventListener("click", () => {
 
   // Display the average time taken by each sorting algorithm
   bubbleSortElement.innerText = `Bubble sort took an average of ${bubbleSortAverageTime.toFixed(
-    2
+    3
   )} microseconds to sort the array ${numRuns} times.`;
   insertionSortElement.innerText = `Insertion sort took an average of ${insertionSortAverageTime.toFixed(
-    2
+    3
   )} microseconds to sort the array ${numRuns} times.`;
 
   // Appending sort results
@@ -147,14 +157,31 @@ function random() {
   return 1 + Math.floor(Math.random() * 99);
 }
 
-// The list function creates an unordered list element and adds every number of the array to the list, then appends it to the container
+// Function to create and display an unordered list based on the array
 function list() {
+  // Create a new unordered list (ul) element and store it in the listContainer variable
   const listContainer = document.createElement("ul");
+  // Add the "list" class to the listContainer element
   listContainer.classList.add("list");
+
+  // Clear the existing array before populating it with new values
+  array = [];
+
+  // Call the populateArray function to fill the array with values based on the selected size
+  populateArray(array, size);
+
+  // Iterate through each item in the array
   array.forEach((item) => {
+    // Create a new list item (li) element for each array item
     let li = document.createElement("li");
+
+    // Set the inner text of the list item to the current array item's value
     li.innerText = item;
+
+    // Append the listContainer (ul) to the container element
     container.append(listContainer);
+
+    // Append the newly created list item (li) to the listContainer (ul)
     listContainer.append(li);
   });
 }
@@ -358,4 +385,52 @@ function measureAverageSortTime(sortFunction, array, numRuns) {
 
   // Calculate and return the average time the sort function took across all runs (in microseconds)
   return totalTime / numRuns;
+}
+
+// Function to handle the changes in the array size selection menu
+function arraySizeHandler() {
+  const selectedSize = sizeSelectElement.value;
+  console.log(selectedSize);
+
+  if (selectedSize === "11") {
+    size = 11;
+  } else if (selectedSize === "21") {
+    size = 21;
+  } else if (selectedSize === "41") {
+    size = 41;
+  } else if (selectedSize === "61") {
+    size = 61;
+  } else if (selectedSize === "81") {
+    size = 81;
+  }
+  // Generate a new array with the updated size and display it
+  array = populateArray(size);
+
+  // Remove the previous list from the container
+  const oldList = document.querySelector(".list");
+  if (oldList) {
+    oldList.remove();
+  }
+
+  // Create a new list and display it
+  list();
+}
+
+// Function to handle the changes in the iteration selection menu
+function iterationHandler() {
+  // Get the value of the selected iteration option
+  const selectedIteration = iterationSelectorElement.value;
+
+  // Check the selected value and update the numRuns variable accordingly
+  if (selectedIteration === "50") {
+    numRuns = 50;
+  } else if (selectedIteration === "100") {
+    numRuns = 100;
+  } else if (selectedIteration === "1000") {
+    numRuns = 1000;
+  } else if (selectedIteration === "10000") {
+    numRuns = 10000;
+  } else if (selectedIteration === "100000") {
+    numRuns = 100000;
+  }
 }
