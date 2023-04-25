@@ -40,9 +40,11 @@ body {
 
 .button {
   text-align: center;
+  color: white;
   margin: auto;
   font-family: inherit;
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
+  border: 2px solid var(--secondary-darker);
   border-radius: 10px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
   font-size: 20px;
@@ -60,7 +62,7 @@ body {
 }
 
 .button:hover {
-  background-color: var(--secondary-darker);
+  background-color: var(--primary-darker);
 }
 
 .hide {

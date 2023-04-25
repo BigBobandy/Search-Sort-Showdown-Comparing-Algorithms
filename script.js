@@ -40,7 +40,7 @@ beginBtn.addEventListener("click", () => {
   // Create an element with directions and append it to the container
   const directions = document.createElement("h4");
   directions.innerHTML =
-    "Select a number from the array below to determine which search algorithm, binary or sequential, can more efficiently find your chosen number.";
+    "Choose a number from the array below to compare the efficiency of binary and sequential search algorithms in finding your selected number, as well as the performance of bubble sort and insertion sort in sorting the array";
   container.append(directions);
 
   // Call the function that populates the array with 20 random numbers from 1-99, then the list function puts them in a list element and appends them
@@ -76,6 +76,20 @@ searchButton.addEventListener("click", () => {
   // Check for input errors
   if (errorHandler(inputElement)) {
     return;
+  }
+
+  // Determine if the number is found in the array or not by calling the search functions
+  const numberFound =
+    sequentialSearch(array, size, input) && binarySearch(array, size, input);
+
+  // If the number is found, display the bubble sort and insertion sort elements
+  if (numberFound) {
+    bubbleSortElement.style.display = "block";
+    insertionSortElement.style.display = "block";
+  } else {
+    // If the number is not found, hide the bubble sort and insertion sort elements
+    bubbleSortElement.style.display = "none";
+    insertionSortElement.style.display = "none";
   }
 
   // Clone the array to have an identical unsorted version for both sorting algorithms
@@ -203,6 +217,9 @@ function binarySearch(array, size, input) {
 
   // Calling displayResults with the search information as arguments in order to display them
   displayResults(found, searches, binaryElement, searchType);
+
+  // Returning true or false if the number entered by the user is found in the array
+  return found;
 }
 
 // Perform sequential search on the array to find the input value
@@ -236,6 +253,9 @@ function sequentialSearch(array, size, input) {
 
   // Calling displayResults with the search information as arguments in order to display them
   displayResults(found, searches, sequentialElement, searchType);
+
+  // Returning true or false if the number entered by the user is found in the array
+  return found;
 }
 
 // Perform insertion sort on the array
@@ -266,19 +286,28 @@ function getTime(startTime) {
   return endTime - startTime;
 }
 
-// Function that takes in algorithm info and displays it
+// Function that takes in search algorithm info and displays it
 function displayResults(found, searches, element, type) {
-  let result;
+  let result = "";
   const searchType = type;
 
+  // If the number is found and it took only 1 search
   if (found == true && searches == 1) {
+    // Set the result message
     result = `It took ${searches} search using the ${searchType} search algorithm to find ${input}.`;
+
+    // If the number is found and it took more than 1 search
   } else if (found == true) {
+    // Set the result message
     result = `It took ${searches} searches using the ${searchType} search algorithm to find ${input}.`;
-  } else {
+
+    // If the number is not found display the error message only once
+  } else if (searchType === "Sequential") {
+    // Set the error message
     result =
       "The number you entered could not be found. Please enter a number from the array above.";
   }
+  // Update the result element with the message
   element.innerHTML = result;
 }
 
