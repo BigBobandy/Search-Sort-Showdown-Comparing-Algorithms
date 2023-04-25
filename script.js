@@ -5,6 +5,7 @@ const form = document.getElementById("inputForm");
 const container = document.querySelector(".container");
 const results = document.getElementById("resultContainer");
 const searchButton = document.getElementById("searchBtn");
+const websiteDescription = document.getElementById("website-description");
 
 // Set the size of the array to 21
 let size = 21;
@@ -18,6 +19,7 @@ beginBtn.addEventListener("click", () => {
   // Remove the "hide" class from the inputElement and searchButton
   inputElement.classList.remove("hide");
   searchButton.classList.remove("hide");
+  websiteDescription.classList.add("hide");
   // Remove the begin button
   beginBtn.remove();
 
@@ -48,6 +50,15 @@ beginBtn.addEventListener("click", () => {
 searchButton.addEventListener("click", () => {
   // Remove the "hide" class from the results element
   results.classList.remove("hide");
+
+  // Storing what is entered by the user
+  input = inputElement.value;
+
+  // Check for input errors
+  if (errorHandler(inputElement)) {
+    return;
+  }
+
   // Clone the array to have an identical unsorted version for both sorting algorithms
   const arrayCopy = array.slice();
 
@@ -75,9 +86,6 @@ searchButton.addEventListener("click", () => {
     2
   )} milliseconds.`;
   results.append(bubbleSortResult, insertionSortResult);
-
-  // Storing what is entered by the user
-  input = inputElement.value;
 
   // Sort the array in ascending order
   bubbleSort(array, size);
@@ -256,4 +264,36 @@ function displayResults(found, searches, element, type) {
       "The number you entered could not be found. Please enter a number from the array above.";
   }
   element.innerHTML = result;
+}
+
+// Function for input validation
+function errorHandler(input) {
+  // Check if the input field is empty or contains only whitespace
+  if (!input.value.trim()) {
+    // Set the error message to be displayed
+    const errorMessage = "Please enter a number before searching.";
+
+    // Create an element to display the error message
+    const errorElement = document.createElement("h4");
+    errorElement.classList.add("error");
+    errorElement.innerText = errorMessage;
+
+    // Append the error message to the results element
+    results.appendChild(errorElement);
+
+    // Return true to indicate there's an error
+    return true;
+  } else {
+    // If there's a valid input, remove any previous error message
+
+    // Find the error message element, if it exists
+    const errorElement = document.querySelector(".error");
+    // If an error message element is found, remove it
+    if (errorElement) {
+      errorElement.remove();
+    }
+
+    // Return false to indicate there's no error
+    return false;
+  }
 }
