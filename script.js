@@ -14,6 +14,20 @@ let array = [size];
 // Variable to store user input
 let input;
 
+// Create an element for the bubble sort result
+const bubbleSortElement = document.createElement("h4");
+bubbleSortElement.setAttribute("id", "bubble-sort-element");
+bubbleSortElement.classList.add("result");
+
+// Create an element to display the error message
+const errorElement = document.createElement("h4");
+errorElement.setAttribute("id", "error-message");
+
+// Create an element for the insertion sort result
+const insertionSortElement = document.createElement("h4");
+insertionSortElement.setAttribute("id", "insertion-sort-element");
+insertionSortElement.classList.add("result");
+
 // Add an event listener to the begin button for a click event
 beginBtn.addEventListener("click", () => {
   // Remove the "hide" class from the inputElement and searchButton
@@ -34,16 +48,21 @@ beginBtn.addEventListener("click", () => {
   list();
 
   // Create an element for the sequential search results and append it to the results element
-  const seqResult = document.createElement("h4");
-  seqResult.setAttribute("id", "seqResult");
-  seqResult.classList.add("result");
-  results.append(seqResult);
+  const sequentialSearchElement = document.createElement("h4");
+  sequentialSearchElement.setAttribute("id", "sequential-search-element");
+  sequentialSearchElement.classList.add("result");
+  results.append(sequentialSearchElement);
 
   // Create an element for the binary search results and append it to the results element
   const binarySearchElement = document.createElement("h4");
   binarySearchElement.setAttribute("id", "binary-search-element");
   binarySearchElement.classList.add("result");
   results.append(binarySearchElement);
+
+  // Appending the other elements to the results container
+  results.append(bubbleSortElement);
+  results.append(insertionSortElement);
+  results.append(errorElement);
 });
 
 // Add an event listener to the search button for a click event
@@ -62,35 +81,32 @@ searchButton.addEventListener("click", () => {
   // Clone the array to have an identical unsorted version for both sorting algorithms
   const arrayCopy = array.slice();
 
-  //Measure the time taken by the bubble sort algorithim
+  // Measure the time taken by the bubble sort algorithim
   let bubbleSortTime = performance.now();
   bubbleSort(array, size);
-  const bubbleSortEndTime = getTime(bubbleSortTime);
-  bubbleSortTime = bubbleSortEndTime - bubbleSortTime;
+  bubbleSortTime = getTime(bubbleSortTime);
 
   // Measure the time taken by the insertion sort algorithm
   let insertionSortTime = performance.now();
   insertionSort(arrayCopy, size);
-  const insertionSortEndTime = getTime(insertionSortTime);
-  console.log("start:" + insertionSortTime + "end:" + insertionSortEndTime);
+  insertionSortTime = getTime(insertionSortTime);
 
   // Display time taken by each sorting algorithm
-  const bubbleSortResult = document.createElement("h4");
-  const insertionSortResult = document.createElement("h4");
-  bubbleSortResult.classList.add("result");
-  insertionSortResult.classList.add("result");
-  bubbleSortResult.innerText = `Bubble sort took ${bubbleSortTime.toFixed(
+  bubbleSortElement.innerText = `Bubble sort took ${bubbleSortTime.toFixed(
     2
   )} milliseconds.`;
-  insertionSortResult.innerText = `Insertion sort took ${insertionSortTime.toFixed(
+  insertionSortElement.innerText = `Insertion sort took ${insertionSortTime.toFixed(
     2
   )} milliseconds.`;
-  results.append(bubbleSortResult, insertionSortResult);
+
+  // Appending sort results
+  results.append(insertionSortElement);
+  results.append(bubbleSortElement);
 
   // Sort the array in ascending order
   bubbleSort(array, size);
   // Call the sequential search function with the array, size, and input
-  seqSearch(array, size, input);
+  sequentialSearch(array, size, input);
   // Call the binary search function with the array, size, and input
   binarySearch(array, size, input);
   // Reset the user input form
@@ -190,8 +206,10 @@ function binarySearch(array, size, input) {
 }
 
 // Perform sequential search on the array to find the input value
-function seqSearch(array, size, input) {
-  const sequentialElement = document.getElementById("seqResult");
+function sequentialSearch(array, size, input) {
+  const sequentialElement = document.getElementById(
+    "sequential-search-element"
+  );
   let found = false;
   // Variables to store the search information
   let searches = 0;
@@ -242,12 +260,10 @@ function insertionSort(array) {
   }
 }
 
-// Function that calculates sorting algorithm time
-function getTime(sortTime) {
+// Function that calculates sorting algorithm time and displays results
+function getTime(startTime) {
   const endTime = performance.now();
-  sortTime = endTime - sortTime;
-
-  return sortTime;
+  return endTime - startTime;
 }
 
 // Function that takes in algorithm info and displays it
@@ -273,9 +289,6 @@ function errorHandler(input) {
     // Set the error message to be displayed
     const errorMessage = "Please enter a number before searching.";
 
-    // Create an element to display the error message
-    const errorElement = document.createElement("h4");
-    errorElement.classList.add("error");
     errorElement.innerText = errorMessage;
 
     // Append the error message to the results element
@@ -285,11 +298,7 @@ function errorHandler(input) {
     return true;
   } else {
     // If there's a valid input, remove any previous error message
-
-    // Find the error message element, if it exists
-    const errorElement = document.querySelector(".error");
-    // If an error message element is found, remove it
-    if (errorElement) {
+    if (errorElement.parentElement) {
       errorElement.remove();
     }
 
