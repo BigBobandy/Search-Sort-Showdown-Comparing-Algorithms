@@ -10,6 +10,8 @@ const searchButton = document.getElementById("searchBtn");
 let size = 21;
 // Initialize an array of size 21
 let array = [size];
+// Variable to store user input
+let input;
 
 // Add an event listener to the begin button for a click event
 beginBtn.addEventListener("click", () => {
@@ -36,26 +38,53 @@ beginBtn.addEventListener("click", () => {
   results.append(seqResult);
 
   // Create an element for the binary search results and append it to the results element
-  const binResult = document.createElement("h4");
-  binResult.setAttribute("id", "binResult");
-  binResult.classList.add("result");
-  results.append(binResult);
+  const binarySearchElement = document.createElement("h4");
+  binarySearchElement.setAttribute("id", "binary-search-element");
+  binarySearchElement.classList.add("result");
+  results.append(binarySearchElement);
 });
 
 // Add an event listener to the search button for a click event
 searchButton.addEventListener("click", () => {
   // Remove the "hide" class from the results element
   results.classList.remove("hide");
-  // Get the user input value
-  const input = document.getElementById("userInput").value;
+  // Clone the array to have an identical unsorted version for both sorting algorithms
+  const arrayCopy = array.slice();
+
+  //Measure the time taken by the bubble sort algorithim
+  let bubbleSortTime = performance.now();
+  bubbleSort(array, size);
+  const bubbleSortEndTime = getTime(bubbleSortTime);
+  bubbleSortTime = bubbleSortEndTime - bubbleSortTime;
+
+  // Measure the time taken by the insertion sort algorithm
+  let insertionSortTime = performance.now();
+  insertionSort(arrayCopy, size);
+  const insertionSortEndTime = getTime(insertionSortTime);
+  console.log("start:" + insertionSortTime + "end:" + insertionSortEndTime);
+
+  // Display time taken by each sorting algorithm
+  const bubbleSortResult = document.createElement("h4");
+  const insertionSortResult = document.createElement("h4");
+  bubbleSortResult.classList.add("result");
+  insertionSortResult.classList.add("result");
+  bubbleSortResult.innerText = `Bubble sort took ${bubbleSortTime.toFixed(
+    2
+  )} milliseconds.`;
+  insertionSortResult.innerText = `Insertion sort took ${insertionSortTime.toFixed(
+    2
+  )} milliseconds.`;
+  results.append(bubbleSortResult, insertionSortResult);
+
+  // Storing what is entered by the user
+  input = inputElement.value;
+
   // Sort the array in ascending order
-  sortArray(array, size);
+  bubbleSort(array, size);
   // Call the sequential search function with the array, size, and input
   seqSearch(array, size, input);
   // Call the binary search function with the array, size, and input
   binarySearch(array, size, input);
-  // Call the function to get the results of every search
-  getResults();
   // Reset the user input form
   form.reset();
 });
@@ -63,7 +92,16 @@ searchButton.addEventListener("click", () => {
 // This function calls the random function and populates the array with 20 random numbers ranging from 1-99
 function populateArray(array, size) {
   for (let i = 0; i < size - 1; i++) {
-    array[i] = random();
+    let randomNumber = random();
+
+    // Check if the random number already exists in the array to prevent duplicates in the array
+    while (array.includes(randomNumber)) {
+      // Generate a new random number if it already exists in the array
+      randomNumber = random();
+    }
+
+    // Add the unique random number to the array
+    array[i] = randomNumber;
   }
 }
 
@@ -84,12 +122,16 @@ function list() {
   });
 }
 
-// Sort the array in ascending order using the bubble sort
-function sortArray(array, size) {
+// Sort the array in ascending order using the bubble sort algorithm
+function bubbleSort(array, size) {
+  // Calculate the index of the last element in the array
   maxElement = size - 1;
 
+  // Iterate through the array, comparing adjacent elements
   for (var i = 0; i < maxElement; i++) {
+    // Iterate through the unsorted part of the array
     for (var j = 0; j < maxElement - i - 1; j++) {
+      // Compare adjacent elements and swap them if they are in the wrong order
       if (array[j] > array[j + 1]) {
         let temp = array[j];
         array[j] = array[j + 1];
@@ -101,74 +143,117 @@ function sortArray(array, size) {
 
 // Perform binary search on the sorted array to find the input value
 function binarySearch(array, size, input) {
+  const binaryElement = document.getElementById("binary-search-element");
   let start = 0;
   let end = size - 1;
+  // Variables to store the search information
   let found = false;
   let searches = 0;
+  const searchType = "Binary";
 
+  // Continue searching as long as the start index is less than or equal to the end index
   while (start <= end) {
+    // Calculate the middle index of the current search range
     let mid = Math.floor((start + end) / 2);
+
+    // Check if the middle element matches the input value
     if (array[mid] == input) {
+      // Record that we've made another search attempt
       searches += 1;
+      // We've found the input value, so update the found flag
       found = true;
-      return [found, searches];
+      // Exit the loop since we've found the value
+      break;
     } else if (array[mid] < input) {
+      // Record that we've made another search attempt
       searches += 1;
+      // The input value is greater than the middle element, so update the start index to the right of the middle index
       start = mid + 1;
     } else {
+      // The input value is less than the middle element, so update the end index to the left of the middle index
       end = mid - 1;
+      // Record that we've made another search attempt
       searches += 1;
     }
   }
-  return [found, searches];
-}
 
-// Get the results of the searches and display them
-function getResults() {
-  const input = document.getElementById("userInput").value;
-  const binResult = document.getElementById("binResult");
-  const [found, searches] = binarySearch(array, size, input);
-  let result;
-
-  if (found == true && searches == 1) {
-    result = `It took ${searches} search using the binary search algorithm to find ${input}.`;
-  } else if (found == true) {
-    result = `It took ${searches} searches using the binary search algorithm to find ${input}.`;
-  } else {
-    result =
-      "The number you entered could not be found. Please enter a number from the array above.";
-  }
-  binResult.innerHTML = result;
+  // Calling displayResults with the search information as arguments in order to display them
+  displayResults(found, searches, binaryElement, searchType);
 }
 
 // Perform sequential search on the array to find the input value
 function seqSearch(array, size, input) {
-  const seqResult = document.getElementById("seqResult");
+  const sequentialElement = document.getElementById("seqResult");
   let found = false;
+  // Variables to store the search information
   let searches = 0;
-  let result;
   let i = 0;
+  const searchType = "Sequential";
 
+  // Keep looking for the input value until it's found or we've reached the end of the array
   while (found == false && i <= size - 1) {
+    // Check if the current array element matches the input value
     if (array[i] == input) {
+      // We've found the input value, so update the found flag
       found = true;
+      // Record that we've made another search attempt
       searches += 1;
+      // Exit the loop since we've found the value
       break;
     } else {
+      // Move on to the next array element
       i++;
+      // Record that we've made another search attempt
       searches += 1;
     }
   }
 
-  return searches;
+  // Calling displayResults with the search information as arguments in order to display them
+  displayResults(found, searches, sequentialElement, searchType);
+}
+
+// Perform insertion sort on the array
+function insertionSort(array) {
+  // Iterate through the array, starting from the second element (index 1)
+  for (let i = 1; i < array.length; i++) {
+    // Store the current element as the key
+    let key = array[i];
+    // Set j to the index before the current element (i - 1)
+    let j = i - 1;
+
+    // Move elements of array[0...i-1] that are greater than the key to one position ahead of their current position
+    // As long as j is not negative and the current element at index j is greater than the key
+    while (j >= 0 && array[j] > key) {
+      // Move the element at index j to the next position (j + 1)
+      array[j + 1] = array[j];
+      // Decrement j
+      j = j - 1;
+    }
+    // Insert the key in its correct position in the sorted part of the array
+    array[j + 1] = key;
+  }
+}
+
+// Function that calculates sorting algorithm time
+function getTime(sortTime) {
+  const endTime = performance.now();
+  sortTime = endTime - sortTime;
+
+  return sortTime;
+}
+
+// Function that takes in algorithm info and displays it
+function displayResults(found, searches, element, type) {
+  let result;
+  const searchType = type;
 
   if (found == true && searches == 1) {
-    result = `It took ${searches} search using the sequential search algorithm to find ${input}.`;
+    result = `It took ${searches} search using the ${searchType} search algorithm to find ${input}.`;
   } else if (found == true) {
-    result = `It took ${searches} searches using the sequential search algorithm to find ${input}.`;
+    result = `It took ${searches} searches using the ${searchType} search algorithm to find ${input}.`;
   } else {
     result =
       "The number you entered could not be found. Please enter a number from the array above.";
   }
-  seqResult.innerHTML = result;
+  element.innerHTML = result;
 }
