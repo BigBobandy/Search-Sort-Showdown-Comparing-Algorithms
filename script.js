@@ -92,33 +92,32 @@ searchButton.addEventListener("click", () => {
     insertionSortElement.style.display = "none";
   }
 
-  // Clone the array to have an identical unsorted version for both sorting algorithms
-  const arrayCopy = array.slice();
+  // Use the measureAverageSortTime function to calculate average time for both sorting algorithms
+  // numRuns defines how many times the sorting algorithms will run
+  const numRuns = 1000;
+  const insertionSortAverageTime = measureAverageSortTime(
+    insertionSort,
+    array,
+    numRuns
+  );
+  const bubbleSortAverageTime = measureAverageSortTime(
+    bubbleSort,
+    array,
+    numRuns
+  );
 
-  // Measure the time taken by the bubble sort algorithim
-  let bubbleSortTime = performance.now();
-  bubbleSort(array, size);
-  bubbleSortTime = getTime(bubbleSortTime);
-
-  // Measure the time taken by the insertion sort algorithm
-  let insertionSortTime = performance.now();
-  insertionSort(arrayCopy, size);
-  insertionSortTime = getTime(insertionSortTime);
-
-  // Display time taken by each sorting algorithm
-  bubbleSortElement.innerText = `Bubble sort took ${bubbleSortTime.toFixed(
+  // Display the average time taken by each sorting algorithm
+  bubbleSortElement.innerText = `Bubble sort took an average of ${bubbleSortAverageTime.toFixed(
     2
-  )} milliseconds.`;
-  insertionSortElement.innerText = `Insertion sort took ${insertionSortTime.toFixed(
+  )} microseconds to sort the array ${numRuns} times.`;
+  insertionSortElement.innerText = `Insertion sort took an average of ${insertionSortAverageTime.toFixed(
     2
-  )} milliseconds.`;
+  )} microseconds to sort the array ${numRuns} times.`;
 
   // Appending sort results
   results.append(insertionSortElement);
   results.append(bubbleSortElement);
 
-  // Sort the array in ascending order
-  bubbleSort(array, size);
   // Call the sequential search function with the array, size, and input
   sequentialSearch(array, size, input);
   // Call the binary search function with the array, size, and input
@@ -161,9 +160,9 @@ function list() {
 }
 
 // Sort the array in ascending order using the bubble sort algorithm
-function bubbleSort(array, size) {
+function bubbleSort(array) {
   // Calculate the index of the last element in the array
-  maxElement = size - 1;
+  maxElement = array.length - 1;
 
   // Iterate through the array, comparing adjacent elements
   for (var i = 0; i < maxElement; i++) {
@@ -188,6 +187,9 @@ function binarySearch(array, size, input) {
   let found = false;
   let searches = 0;
   const searchType = "Binary";
+
+  // Sort the array in ascending order
+  array.sort((a, b) => a - b);
 
   // Continue searching as long as the start index is less than or equal to the end index
   while (start <= end) {
@@ -280,12 +282,6 @@ function insertionSort(array) {
   }
 }
 
-// Function that calculates sorting algorithm time and displays results
-function getTime(startTime) {
-  const endTime = performance.now();
-  return endTime - startTime;
-}
-
 // Function that takes in search algorithm info and displays it
 function displayResults(found, searches, element, type) {
   let result = "";
@@ -334,4 +330,32 @@ function errorHandler(input) {
     // Return false to indicate there's no error
     return false;
   }
+}
+
+// Function to run the sorting algorithms multiple times and calculate the average time
+function measureAverageSortTime(sortFunction, array, numRuns) {
+  let totalTime = 0;
+
+  // Loop for numRuns iterations to measure the average time taken by the sort function
+  for (let i = 0; i < numRuns; i++) {
+    // Create a copy of the original array to be sorted,
+    // ensuring that the original array remains unmodified during each run
+    let arrayCopy = [...array];
+
+    // Record the start time of the sort function using performance.now()
+    let startTime = performance.now();
+
+    // Call the sort function using the copied array as input
+    sortFunction(arrayCopy);
+
+    // Record the end time of the sort function using performance.now()
+    let endTime = performance.now();
+
+    // Calculate the time taken for this specific run (in microseconds)
+    // and add it to the totalTime variable
+    totalTime += (endTime - startTime) * 1000;
+  }
+
+  // Calculate and return the average time the sort function took across all runs (in microseconds)
+  return totalTime / numRuns;
 }
